@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FriendlyBullet : MonoBehaviour
 {
-    private float speed = 10f;
+    private float speed = 10;
     void Start()
     {
         

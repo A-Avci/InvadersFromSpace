@@ -8,9 +8,12 @@ public class UIManager : MonoBehaviour
 {
     private static UIManager instance;
 
-    public TextMeshProUGUI scoreText, highScoreText, coinText, waveText;
+    public TextMeshProUGUI scoreText;
     private int score;
-    private int highScore;
+    public TextMeshProUGUI highscoreText;
+    private int highscore;
+    public TextMeshProUGUI coinText;
+    public TextMeshProUGUI waveText;
     private int wave;
     public Image[] lifeSprites;
     public Image healtBar;
@@ -20,8 +23,8 @@ public class UIManager : MonoBehaviour
 
     private void Awake()
     {
-        if (instance == null)
-        {
+        if (instance == null) 
+        { 
             instance = this;
         }
         else
@@ -30,29 +33,43 @@ public class UIManager : MonoBehaviour
         }
     }
 
-
     public static void UpdateLives(int l)
     {
+        foreach (Image i in instance.lifeSprites)
+        {
+            i.color = instance.inactive;
+        }
+        for (int i = 0; i < l; i++)
+        {
+            instance.lifeSprites[i].color = instance.active;
+        }
+    }
 
+    public static void UpdatehealtBar (int h)
+    {
+        instance.healtBar.sprite = instance.healthBars[h];
     }
 
     public static void UpdateScore(int s)
     {
-
+        instance.score += s;
+        instance.scoreText.text = instance.score.ToString("000,000");
     }
 
     public static void UpdateHighScore()
     {
-
+        // TODO
     }
 
     public static void UpdateWave()
     {
-
+        instance.wave++;
+        instance.waveText.text = instance.wave.ToString();
     }
 
     public static void UpdateCoins()
     {
-
+        // TODO
     }
+
 }

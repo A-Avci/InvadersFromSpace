@@ -6,8 +6,8 @@ public class MotherShip : MonoBehaviour
 {
     public int scoreValue;
 
-    private const float MAX_LEFT = -6f;
-    private float speed = 5f;
+    private const float MAX_LEFT = -6;
+    private float speed = 5;
 
     
     void Update()
@@ -16,6 +16,16 @@ public class MotherShip : MonoBehaviour
 
         if (transform.position.x <= MAX_LEFT)
         {
+            gameObject.SetActive(false);
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("FriendlyBullet"))
+        {
+            UIManager.UpdateScore(scoreValue);
+            collision.gameObject.SetActive(false);
             gameObject.SetActive(false);
         }
     }

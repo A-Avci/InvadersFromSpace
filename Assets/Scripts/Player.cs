@@ -17,6 +17,7 @@ public class Player : MonoBehaviour
     public ShipStats shipStats;
     private Vector2 offScreenPos = new Vector2(0, -20);
     private Vector2 startPos = new Vector2(0, -6);
+    private float dirx;
 
     private void Awake()
     {
@@ -28,10 +29,12 @@ public class Player : MonoBehaviour
     {
         shipStats.currentHealth = shipStats.maxHealth;
         shipStats.currentLifes = shipStats.maxLifes;
-        transform.position = startPos; 
+        transform.position = startPos;
+        UIManager.UpdatehealtBar(shipStats.currentHealth);
+        UIManager.UpdateLives(shipStats.currentLifes);
     }
 
-    
+
     void Update()
     {
 #if UNITY_EDITOR
@@ -48,6 +51,26 @@ public class Player : MonoBehaviour
             StartCoroutine(Shoot());
         }
 #endif
+
+        dirx = Input.acceleration.x;
+        //Debug.Log(dirx);
+        if (dirx <= -0.1f && transform.position.x > -width)
+        {
+            transform.Translate(Vector2.left * Time.deltaTime * shipStats.shipSpeed);
+        }
+        if (dirx >= 0.1f && transform.position.x < width)
+        {
+            transform.Translate(Vector2.right * Time.deltaTime * shipStats.shipSpeed);
+        }
+
+    }
+
+    public void ShootButton()
+    {
+        if (!isShooting)
+        {
+            StartCoroutine(Shoot());
+        }
     }
 
     private IEnumerator Shoot()
@@ -66,6 +89,7 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("EnemyBullet"))
         {
+            Debug.Log("Player Hit!");
             collision.gameObject.SetActive(false);
             TakeDamage();
         }
@@ -74,26 +98,33 @@ public class Player : MonoBehaviour
     private IEnumerator Respawn()
     {
         transform.position = offScreenPos;
+
         yield return new WaitForSeconds(2);
 
         shipStats.currentHealth = shipStats.maxHealth;
+
         transform.position = startPos;
+        UIManager.UpdatehealtBar(shipStats.currentHealth);
     }
+
 
     public void TakeDamage()
     {
         shipStats.currentHealth--;
+        UIManager.UpdatehealtBar(shipStats.currentHealth);
 
         if (shipStats.currentHealth <= 0)
         {
             shipStats.currentLifes--;
+            UIManager.UpdateLives(shipStats.currentLifes);
 
-            if (shipStats.currentLifes <= 0 )
+            if (shipStats.currentLifes <= 0)
             {
-                Debug.Log("Bitti Ammýna");
+                Debug.Log("Game Over");
             }
             else
             {
+                //Debug.Log("Respawn");
                 StartCoroutine(Respawn());
             }
         }
